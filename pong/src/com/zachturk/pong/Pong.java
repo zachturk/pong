@@ -34,7 +34,7 @@ public class Pong implements ApplicationListener {
 	@Override
 	public void render() {		
 		batch.begin();
-		batch.draw(paddle(), 0, 0);
+		batch.draw(paddle(), -Gdx.graphics.getWidth()/2+15, 0);
 		batch.end();
 	}
 
