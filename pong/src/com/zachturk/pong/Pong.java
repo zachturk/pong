@@ -1,13 +1,16 @@
 package com.zachturk.pong;
 
+import com.badlogic.gdx.Application;
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 
 public class Pong implements ApplicationListener {
 	public static final String TAG = Pong.class.getName();
@@ -16,10 +19,12 @@ public class Pong implements ApplicationListener {
 	private Controller controller;
 	private SpriteBatch batch;
 	private OrthographicCamera camera;
+	private float paddle_height = 0;
 	
 	@Override
 	public void create() {		
 //		renderer = new Renderer();
+		Gdx.app.setLogLevel(Application.LOG_DEBUG);
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		batch = new SpriteBatch();
@@ -33,8 +38,16 @@ public class Pong implements ApplicationListener {
 
 	@Override
 	public void render() {		
+		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		if (Gdx.input.isKeyPressed(Keys.W)) {
+			paddle_height += 500f*Gdx.graphics.getDeltaTime();
+		}
+		else if (Gdx.input.isKeyPressed(Keys.S)) {
+			paddle_height -= 500f*Gdx.graphics.getDeltaTime();
+		}
+		paddle_height = MathUtils.clamp(paddle_height, -Gdx.graphics.getHeight()/2, Gdx.graphics.getHeight()/2 - 64);
 		batch.begin();
-		batch.draw(paddle(), -Gdx.graphics.getWidth()/2+15, 0);
+		batch.draw(paddle(), -Gdx.graphics.getWidth()/2+15, paddle_height);
 		batch.end();
 	}
 
