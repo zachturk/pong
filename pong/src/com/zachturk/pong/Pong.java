@@ -39,15 +39,10 @@ public class Pong implements ApplicationListener {
 	@Override
 	public void render() {		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
-		if (Gdx.input.isKeyPressed(Keys.W)) {
-			paddle_height += 500f*Gdx.graphics.getDeltaTime();
-		}
-		else if (Gdx.input.isKeyPressed(Keys.S)) {
-			paddle_height -= 500f*Gdx.graphics.getDeltaTime();
-		}
-		paddle_height = MathUtils.clamp(paddle_height, -Gdx.graphics.getHeight()/2, Gdx.graphics.getHeight()/2 - 64);
+		updatePaddle();
 		batch.begin();
-		batch.draw(paddle(), -Gdx.graphics.getWidth()/2+15, paddle_height);
+		renderPaddle();
+		renderBall();
 		batch.end();
 	}
 
@@ -71,6 +66,33 @@ public class Pong implements ApplicationListener {
 		Pixmap pixmap = new Pixmap(8, 64, Format.RGB888);
 		pixmap.setColor(1, 1, 1, 1);
 		pixmap.fill();
+		texture = new Texture(pixmap);
+		return texture;
+	}
+	
+	private void updatePaddle() {
+		if (Gdx.input.isKeyPressed(Keys.W)) {
+			paddle_height += 500f*Gdx.graphics.getDeltaTime();
+		}
+		else if (Gdx.input.isKeyPressed(Keys.S)) {
+			paddle_height -= 500f*Gdx.graphics.getDeltaTime();
+		}
+		paddle_height = MathUtils.clamp(paddle_height, -Gdx.graphics.getHeight()/2, Gdx.graphics.getHeight()/2 - 64);
+	}
+	
+	private void renderPaddle() {
+		batch.draw(paddle(), -Gdx.graphics.getWidth()/2+15, paddle_height);
+	}
+	
+	private void renderBall() {
+		batch.draw(ball(), 0, 0);
+	}
+	
+	private Texture ball() {
+		Texture texture = null;
+		Pixmap pixmap = new Pixmap(16, 16, Format.RGB888);
+		pixmap.setColor(1, 1, 1, 1);
+		pixmap.fillCircle(4, 4, 4);
 		texture = new Texture(pixmap);
 		return texture;
 	}
