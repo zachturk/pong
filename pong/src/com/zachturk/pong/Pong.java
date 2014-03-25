@@ -26,6 +26,8 @@ public class Pong implements ApplicationListener {
 	private Texture paddleTexture;
 	private float paddleHeight = 0;
 	private Rectangle paddleBounds;
+	private float aiPaddleHeight = 0;
+	private Rectangle aiPaddleBounds;
 	
 	private Texture ballTexture;
 	private Vector2 ballSpeed;
@@ -45,6 +47,8 @@ public class Pong implements ApplicationListener {
 		paddleTexture = paddle();
 		paddleBounds = new Rectangle(0, 0, 8f, 64f);
 		paddleBounds.x = -Gdx.graphics.getWidth()/2+15;
+		aiPaddleBounds = new Rectangle(0, 0, 8f, 64f);
+		aiPaddleBounds.x = Gdx.graphics.getWidth()/2;
 		
 		ballTexture = ball();
 		ballSpeed = new Vector2(-1, 0);
@@ -60,10 +64,12 @@ public class Pong implements ApplicationListener {
 	public void render() {		
 		Gdx.gl10.glClear(GL10.GL_COLOR_BUFFER_BIT);
 		updatePaddle();
+		updateAI();
 		updateBall();
 		batch.begin();
 		renderBall();
 		renderPaddle();
+		renderAI();
 		batch.end();
 	}
 
@@ -147,5 +153,20 @@ public class Pong implements ApplicationListener {
 		pixmap.fillCircle(4, 4, 4);
 		texture = new Texture(pixmap);
 		return texture;
+	}
+	
+	private void renderAI() {
+		batch.draw(paddleTexture, Gdx.graphics.getWidth()/2 - 23, aiPaddleHeight);
+	}
+	
+	private void updateAI() {
+		if (ballPosition.y+16 > aiPaddleHeight+64) {
+			aiPaddleHeight += 500f*Gdx.graphics.getDeltaTime();
+		}
+		else if (ballPosition.y+16 < aiPaddleHeight) {
+			aiPaddleHeight -= 500f*Gdx.graphics.getDeltaTime();
+		}
+		aiPaddleHeight = MathUtils.clamp(aiPaddleHeight, -Gdx.graphics.getHeight()/2, Gdx.graphics.getHeight()/2 - 64);
+		aiPaddleBounds.y = aiPaddleHeight;
 	}
 }
